@@ -51,6 +51,32 @@
 <canvas id="canvas" width="1500" height="700"></canvas>
 
 <script>
+    const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+var tool = "pencil";
+var drawing = false;
+var startX = 0;
+var startY = 0;
+var currentColor = "#000000";
+
+const colorPicker = document.getElementById("colorPicker");
+
+document.getElementById("pencilBtn").addEventListener("touchstart", () => {
+    tool = "pencil";
+});
+
+document.getElementById("circleBtn").addEventListener("touchstart", () => {
+    tool = "circle";
+});
+
+document.getElementById("rectBtn").addEventListener("touchstart", () => {
+    tool = "rectangle";
+});
+
+document.getElementById("triangleBtn").addEventListener("touchstart", () => {
+    tool = "triangle";
+});
 function resizeCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
