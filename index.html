@@ -177,7 +177,7 @@ canvas.addEventListener("touchend", (e)=>{
         ctx.closePath();
         ctx.stroke();
     }
-    
+
     if(tool === "eraser"){
     drawing = true;
 
@@ -187,7 +187,13 @@ canvas.addEventListener("touchend", (e)=>{
     ctx.strokeStyle = "#FFFFFF"; // white erase
     ctx.lineWidth = 20; // eraser size
     ctx.lineCap = "round";
-}
+    }
+
+    if(tool === "pencil" && drawing){
+    ctx.lineTo(pos.x,pos.y);
+    ctx.strokeStyle = currentColor;
+    ctx.stroke();
+    }
     drawing = false;
 });
 </script>
