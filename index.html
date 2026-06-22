@@ -52,7 +52,7 @@
 
 <script>
     const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
 var tool = "pencil";
 var drawing = false;
@@ -61,6 +61,7 @@ var startY = 0;
 var currentColor = "#000000";
 
 const colorPicker = document.getElementById("colorPicker");
+var currentColor = "#000000";
 
 document.getElementById("pencilBtn").addEventListener("touchstart", () => {
     tool = "pencil";
@@ -76,6 +77,13 @@ document.getElementById("rectBtn").addEventListener("touchstart", () => {
 
 document.getElementById("triangleBtn").addEventListener("touchstart", () => {
     tool = "triangle";
+});
+colorPicker.addEventListener("input", () => {
+    currentColor = colorPicker.value;
+});
+
+colorPicker.addEventListener("change", () => {
+    currentColor = colorPicker.value;
 });
 function resizeCanvas(){
     canvas.width = window.innerWidth;
