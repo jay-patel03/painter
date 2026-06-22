@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+    html,body{
+        margin:0;
+        padding:0;
+        overflow:hidden;
+    }
     #canvas{
         border:1px solid #ccc;
         cursor:none;
@@ -19,11 +24,11 @@
     }
 
     #toolCursor{
-        position:absolute;
+        position:fixed;
         font-size:24px;
         pointer-events:none;
-        display:block;
-        transform:translate(-50%,-50%);
+        z-index:9999;
+        display:none;
     }
     button{
         height: 30px;
@@ -33,13 +38,10 @@
     </style>
 </head>
 <body>
-<button id="pencilBtn">✏ Pencil</button>
+<button id="pencilBtn">✏</button>
 <button id="circleBtn"><i class="fa-regular fa-circle"></i></button>
 <button id="rectBtn"><i class="fa-regular fa-square"></i></button>
 <button id="triangleBtn">🔺</button>
-<button id="circleBtn"><i class="fa-regular fa-circle"></i></button>
-<button id="rectBtn"><i class="fa-regular fa-square"></i></button>
-
 <input type="color" id="colorPicker" value="#000000">
 
 <br><br>
@@ -49,130 +51,27 @@
 <canvas id="canvas" width="1500" height="700"></canvas>
 
 <script>
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const toolCursor = document.getElementById("toolCursor");
-const colorPicker = document.getElementById("colorPicker");
+function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
-    var tool = "pencil";
-    var drawing = false;
-    var startX, startY;
-    var currentColor = "#000000";
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-colorPicker.addEventListener("input", () => {
-    currentColor = colorPicker.value;
-});
-
-document.getElementById("pencilBtn").onclick = () => {
-    tool = "pencil";
-    toolCursor.innerHTML = "✏";
-};
-
-document.getElementById("circleBtn").onclick = () => {
-    tool = "circle";
-    toolCursor.innerHTML = "+";
-};
-
-document.getElementById("rectBtn").onclick = () => {
-    tool = "rectangle";
-    toolCursor.innerHTML = "+";
-};
-
-document.getElementById("triangleBtn").onclick = () => {
-    tool = "triangle";
-    toolCursor.innerHTML = "+";
-};
-
-document.addEventListener("mousemove", (e) => {
-    toolCursor.style.left = e.pageX + "px";
-    toolCursor.style.top = e.pageY + "px";
-});
-
-canvas.addEventListener("mousedown", (e) => {
-
-    startX = e.offsetX;
-    startY = e.offsetY;
-
-    if(tool === "pencil"){
-        drawing = true;
-
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-
-        ctx.strokeStyle = currentColor;
-        ctx.lineWidth = 2;
-        ctx.lineCap = "round";
-    }
-});
-
-canvas.addEventListener("mousemove", (e) => {
-
-    if(tool === "pencil" && drawing){
-
-        ctx.lineTo(e.offsetX, e.offsetY);
-        ctx.strokeStyle = currentColor;
-        ctx.stroke();
-    }
-});
-
-canvas.addEventListener("mouseup", (e) => {
-
-    var endX = e.offsetX;
-    var endY = e.offsetY;
-
-    ctx.strokeStyle = currentColor;
-    ctx.lineWidth = 2;
-
-    if(tool === "circle"){
-
-        var radius = Math.sqrt(
-            Math.pow(endX - startX, 2) +
-            Math.pow(endY - startY, 2)
-        );
-
-        ctx.beginPath();
-        ctx.arc(startX, startY, radius, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-
-    if(tool === "rectangle"){
-
-        ctx.strokeRect(
-            startX,
-            startY,
-            endX - startX,
-            endY - startY
-        );
-    }
-
-    if(tool === "triangle"){
-
-        ctx.beginPath();
-        ctx.moveTo(startX, endY);
-        ctx.lineTo((startX + endX) / 2, startY);
-        ctx.lineTo(endX, endY);
-        ctx.closePath();
-        ctx.stroke();
-    }
-
-    drawing = false;
-});
-
-canvas.addEventListener("mouseleave", () => {
-    drawing = false;
-});
-function getTouchPos(canvas, touch) {
+function getTouchPos(touch){
     const rect = canvas.getBoundingClientRect();
+
     return {
         x: touch.clientX - rect.left,
         y: touch.clientY - rect.top
     };
 }
 
-canvas.addEventListener("touchstart", (e) => {
+canvas.addEventListener("touchstart", (e)=>{
     e.preventDefault();
 
-    const pos = getTouchPos(canvas, e.touches[0]);
+    const pos = getTouchPos(e.touches[0]);
 
     startX = pos.x;
     startY = pos.y;
@@ -181,27 +80,65 @@ canvas.addEventListener("touchstart", (e) => {
         drawing = true;
 
         ctx.beginPath();
-        ctx.moveTo(startX, startY);
+        ctx.moveTo(startX,startY);
 
         ctx.strokeStyle = currentColor;
         ctx.lineWidth = 2;
     }
 });
 
-canvas.addEventListener("touchmove", (e) => {
+canvas.addEventListener("touchmove", (e)=>{
     e.preventDefault();
 
-    const pos = getTouchPos(canvas, e.touches[0]);
+    const pos = getTouchPos(e.touches[0]);
 
     if(tool === "pencil" && drawing){
-        ctx.lineTo(pos.x, pos.y);
+        ctx.lineTo(pos.x,pos.y);
         ctx.strokeStyle = currentColor;
         ctx.stroke();
     }
 });
 
-canvas.addEventListener("touchend", (e) => {
+canvas.addEventListener("touchend", (e)=>{
     e.preventDefault();
+
+    const touch = e.changedTouches[0];
+    const pos = getTouchPos(touch);
+
+    const endX = pos.x;
+    const endY = pos.y;
+
+    ctx.strokeStyle = currentColor;
+    ctx.lineWidth = 2;
+
+    if(tool === "circle"){
+        const radius = Math.sqrt(
+            (endX-startX)*(endX-startX) +
+            (endY-startY)*(endY-startY)
+        );
+
+        ctx.beginPath();
+        ctx.arc(startX,startY,radius,0,Math.PI*2);
+        ctx.stroke();
+    }
+
+    if(tool === "rectangle"){
+        ctx.strokeRect(
+            startX,
+            startY,
+            endX-startX,
+            endY-startY
+        );
+    }
+
+    if(tool === "triangle"){
+        ctx.beginPath();
+        ctx.moveTo(startX,endY);
+        ctx.lineTo((startX+endX)/2,startY);
+        ctx.lineTo(endX,endY);
+        ctx.closePath();
+        ctx.stroke();
+    }
 
     drawing = false;
 });
