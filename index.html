@@ -88,6 +88,15 @@ colorPicker.addEventListener("input", () => {
 colorPicker.addEventListener("change", () => {
     currentColor = colorPicker.value;
 });
+var eraserSize = 20;
+
+const eraserSlider = document.getElementById("eraserSize");
+const sizeValue = document.getElementById("sizeValue");
+
+eraserSlider.addEventListener("input", () => {
+    eraserSize = parseInt(eraserSlider.value);
+    sizeValue.innerText = eraserSize;
+});
 function resizeCanvas(){
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
