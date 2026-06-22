@@ -123,6 +123,22 @@ canvas.addEventListener("touchstart", (e)=>{
         ctx.strokeStyle = currentColor;
         ctx.lineWidth = 2;
     }
+    if(tool === "eraser"){
+    drawing = true;
+
+    ctx.beginPath();
+    ctx.moveTo(startX,startY);
+
+    ctx.strokeStyle = "#FFFFFF"; // white erase
+    ctx.lineWidth = 20; // eraser size
+    ctx.lineCap = "round";
+    }
+
+    if(tool === "pencil" && drawing){
+    ctx.lineTo(pos.x,pos.y);
+    ctx.strokeStyle = currentColor;
+    ctx.stroke();
+    }
 });
 
 canvas.addEventListener("touchmove", (e)=>{
@@ -178,22 +194,6 @@ canvas.addEventListener("touchend", (e)=>{
         ctx.stroke();
     }
 
-    if(tool === "eraser"){
-    drawing = true;
-
-    ctx.beginPath();
-    ctx.moveTo(startX,startY);
-
-    ctx.strokeStyle = "#FFFFFF"; // white erase
-    ctx.lineWidth = 20; // eraser size
-    ctx.lineCap = "round";
-    }
-
-    if(tool === "pencil" && drawing){
-    ctx.lineTo(pos.x,pos.y);
-    ctx.strokeStyle = currentColor;
-    ctx.stroke();
-    }
     drawing = false;
 });
 </script>
