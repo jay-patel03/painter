@@ -42,6 +42,7 @@
 <button id="circleBtn"><i class="fa-regular fa-circle"></i></button>
 <button id="rectBtn"><i class="fa-regular fa-square"></i></button>
 <button id="triangleBtn">🔺</button>
+<button id="eraserBtn">🧹</button>
 <input type="color" id="colorPicker" value="#000000">
 
 <br><br>
@@ -77,6 +78,9 @@ document.getElementById("rectBtn").addEventListener("touchstart", () => {
 
 document.getElementById("triangleBtn").addEventListener("touchstart", () => {
     tool = "triangle";
+});
+document.getElementById("eraserBtn").addEventListener("touchstart", () => {
+    tool = "eraser";
 });
 colorPicker.addEventListener("input", () => {
     currentColor = colorPicker.value;
@@ -173,7 +177,17 @@ canvas.addEventListener("touchend", (e)=>{
         ctx.closePath();
         ctx.stroke();
     }
+    
+    if(tool === "eraser"){
+    drawing = true;
 
+    ctx.beginPath();
+    ctx.moveTo(startX,startY);
+
+    ctx.strokeStyle = "#FFFFFF"; // white erase
+    ctx.lineWidth = 20; // eraser size
+    ctx.lineCap = "round";
+}
     drawing = false;
 });
 </script>
