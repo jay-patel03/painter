@@ -6,10 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
     #canvas{
         border:1px solid #ccc;
         cursor:none;
+        border:1px solid #ccc;
+        touch-action:none;
+        width:100%;
+        max-width:1500px;
+        height:auto;
     }
 
     #toolCursor{
@@ -31,6 +37,8 @@
 <button id="circleBtn"><i class="fa-regular fa-circle"></i></button>
 <button id="rectBtn"><i class="fa-regular fa-square"></i></button>
 <button id="triangleBtn">🔺</button>
+<button id="circleBtn"><i class="fa-regular fa-circle"></i></button>
+<button id="rectBtn"><i class="fa-regular fa-square"></i></button>
 
 <input type="color" id="colorPicker" value="#000000">
 
@@ -151,6 +159,50 @@ canvas.addEventListener("mouseup", (e) => {
 });
 
 canvas.addEventListener("mouseleave", () => {
+    drawing = false;
+});
+function getTouchPos(canvas, touch) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    };
+}
+
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+
+    const pos = getTouchPos(canvas, e.touches[0]);
+
+    startX = pos.x;
+    startY = pos.y;
+
+    if(tool === "pencil"){
+        drawing = true;
+
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+
+        ctx.strokeStyle = currentColor;
+        ctx.lineWidth = 2;
+    }
+});
+
+canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+
+    const pos = getTouchPos(canvas, e.touches[0]);
+
+    if(tool === "pencil" && drawing){
+        ctx.lineTo(pos.x, pos.y);
+        ctx.strokeStyle = currentColor;
+        ctx.stroke();
+    }
+});
+
+canvas.addEventListener("touchend", (e) => {
+    e.preventDefault();
+
     drawing = false;
 });
 </script>
