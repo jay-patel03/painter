@@ -146,9 +146,20 @@ canvas.addEventListener("touchmove", (e)=>{
 
     const pos = getTouchPos(e.touches[0]);
 
-    if(tool === "pencil" && drawing){
-        ctx.lineTo(pos.x,pos.y);
-        ctx.strokeStyle = currentColor;
+    if(drawing && (tool === "pencil" || tool === "eraser")){
+
+        ctx.lineTo(pos.x, pos.y);
+
+        if(tool === "pencil"){
+            ctx.strokeStyle = currentColor;
+            ctx.lineWidth = 2;
+        }
+
+        if(tool === "eraser"){
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 20;
+        }
+
         ctx.stroke();
     }
 });
