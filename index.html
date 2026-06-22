@@ -25,7 +25,6 @@
 
     #toolCursor{
         position:fixed;
-        font-size:24px;
         pointer-events:none;
         z-index:9999;
         display:none;
@@ -129,8 +128,8 @@ canvas.addEventListener("touchstart", (e)=>{
     ctx.beginPath();
     ctx.moveTo(startX,startY);
 
-    ctx.strokeStyle = "#FFFFFF"; // white erase
-    ctx.lineWidth = 20; // eraser size
+    ctx.strokeStyle = "#FFFFFF"; 
+    ctx.lineWidth = eraserSize;
     ctx.lineCap = "round";
     }
 
@@ -139,6 +138,16 @@ canvas.addEventListener("touchstart", (e)=>{
     ctx.strokeStyle = currentColor;
     ctx.stroke();
     }
+    if(tool === "eraser"){
+    drawing = true;
+
+    ctx.beginPath();
+    ctx.moveTo(startX,startY);
+
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = eraserSize;
+    ctx.lineCap = "round";
+}
 });
 
 canvas.addEventListener("touchmove", (e)=>{
@@ -161,6 +170,10 @@ canvas.addEventListener("touchmove", (e)=>{
         }
 
         ctx.stroke();
+    }
+    if(tool === "eraser"){
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = eraserSize;
     }
 });
 
