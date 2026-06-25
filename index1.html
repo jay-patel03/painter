@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f4f4f4;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+        .game {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background: #3498db;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .matched {
+            background: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Memory Match Game</h1>
+    <p>Match all pairs to win!</p>
+
+    <div class="game" id="game"></div>
+
+    <script>
+        const game = document.getElementById("game");
+
+        var values = [1, 1, 2, 2, 3, 3, 4, 4];
+
+        values.sort(() => Math.random() - 0.5);
+
+        var firstCard = null;
+        var secondCard = null;
+        var lockBoard = false;
+        var matchedPairs = 0;
+
+        values.forEach(value => {
+            const card = document.createElement("div");
+            card.classList.add("card");
+
+            card.dataset.value = value;
+            card.textContent = "?";
+
+            card.addEventListener("click", flipCard);
+
+            game.appendChild(card);
+        });
+
+        function flipCard() {
+            if (
+                lockBoard ||
+                this === firstCard ||
+                this.classList.contains("matched")
+            ) {
+                return;
+            }
+
+            this.textContent = this.dataset.value;
+
+            if (!firstCard) {
+                firstCard = this;
+                return;
+            }
+
+            secondCard = this;
+            lockBoard = true;
+
+            if (firstCard.dataset.value === secondCard.dataset.value) {
+                firstCard.classList.add("matched");
+                secondCard.classList.add("matched");
+
+                matchedPairs++;
+
+                resetTurn();
+
+                if (matchedPairs === 4) {
+                    setTimeout(() => {
+                        alert("🎉 You Won!");
+                    }, 300);
+                }
+            } else {
+                setTimeout(() => {
+                    firstCard.textContent = "?";
+                    secondCard.textContent = "?";
+                    resetTurn();
+                }, 1000);
+            }
+        }
+
+        function resetTurn() {
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+        }
+    </script>
+</body>
+</html>
