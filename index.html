@@ -262,8 +262,7 @@ canvas.addEventListener(
             startY
         );
     }
-});
-if(tool === "fill"){
+    if(tool === "fill"){
 
     saveState();
 
@@ -273,6 +272,8 @@ if(tool === "fill"){
         currentColor
     );
 }
+});
+
 
 canvas.addEventListener(
     "touchmove",
